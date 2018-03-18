@@ -7,7 +7,9 @@ import { string } from 'prop-types';
 export default class Post extends Component {
     static propTypes = {
         avatar:   string.isRequired,
-        lastName: string.isRequired
+        comment:  string.isRequired,
+        lastName: string.isRequired,
+        key:      string.isRequired
     };
     static contextTypes = {
         firstName: string.isRequired
@@ -15,11 +17,11 @@ export default class Post extends Component {
 
 
     render () {
-        const { lastName, avatar } = this.props;
+        const { avatar, comment, lastName, key } = this.props;
         const { firstName } = this.context;
 
         return (
-            <section className = { Styles.post } >
+            <section className = { Styles.post } key = { key } >
                 <button className = { Styles.close } />
                 <img
                     alt = 'My avatar'
@@ -27,7 +29,7 @@ export default class Post extends Component {
                 />
                 <a href = '#'> { `${firstName} ${lastName}` }</a>
                 <time>{ moment().format('MMM D h:mm:ss a') }</time>
-                <p>Hello!!! This is ME!!!!!</p>
+                <p>{ comment }</p>
             </section>
         );
     }
