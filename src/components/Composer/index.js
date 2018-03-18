@@ -56,7 +56,7 @@ export default class Composer extends Component {
                         value = { comment }
                         onChange = { this._handleTextAreaChange }
                     />
-                    <input type = 'submit' value = 'Post' disabled = { !comment } />
+                    <input disabled = { !comment } type = 'submit' value = 'Post' />
                 </form>
             </section>
         );

@@ -6,6 +6,7 @@ import Styles from './styles.scss';
 // import moment from 'moment';
 import Feed from '../../components/Feed';
 import PropTypes from 'prop-types';
+import Catcher from '../../components/Catcher';
 
 import avatar from '../../theme/assets/homer.png';
 
@@ -29,7 +30,9 @@ export default class App extends Component {
     render () {
         return (
             <section className = { Styles.app }>
-                <Feed { ...options } />
+                <Catcher>
+                    <Feed { ...options } />
+                </Catcher>
             </section>
         );
     }

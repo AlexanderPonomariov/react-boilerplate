@@ -4,6 +4,7 @@ import PropTypes, { string } from 'prop-types';
 import Composer from '../../components/Composer';
 import Post from '../../components/Post';
 import { getUniqueID } from '../../helpers';
+import Catcher from '../../components/Catcher';
 
 export default class Feed extends Component {
     static propTypes = {
@@ -18,9 +19,23 @@ export default class Feed extends Component {
         posts: []
     }
 
+    componentWillUpdate () {
+        console.log('componentWillUpdate');
+    }
+
+    componentDidUpdate () {
+        console.log('componentDidUpdate');
+    }
+
     _createPost = (comment) => {
         this.setState(({ posts }) => ({
             posts: [{ id: getUniqueID(), comment }, ...posts]
+        }));
+    };
+
+    _deletePost = (id) => {
+        this.setState(({ posts }) => ({
+            posts: posts.filter((post) => post.id !== id)
         }));
     };
 
@@ -30,13 +45,16 @@ export default class Feed extends Component {
         const { firstName } = this.context;
         const { posts: postsData } = this.state;
         const posts = postsData.map((post) => (
-            <Post
-                avatar = { avatar }
-                comment = { post.comment }
-                firstName = { firstName }
-                key = { post.id }
-                lastName = { lastName }
-            />
+            <Catcher key = { post.id } >
+                <Post
+                    avatar = { avatar }
+                    comment = { post.comment }
+                    deletePost = { this._deletePost }
+                    firstName = { firstName }
+                    id = { post.id }
+                    lastName = { lastName }
+                />
+            </Catcher>
         ));
 
         return (
