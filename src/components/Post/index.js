@@ -9,48 +9,66 @@ export default class Post extends Component {
     static propTypes = {
         avatar:     string.isRequired,
         comment:    string.isRequired,
+        created:    PropTypes.number.isRequired,
         deletePost: PropTypes.func.isRequired,
+        firstName:  string.isRequired,
         id:         string.isRequired,
         lastName:   string.isRequired
+
+
     };
     static contextTypes = {
-        firstName: string.isRequired
+        firstNameContext: string.isRequired,
+        lastNameContext:  string.isRequired
     };
 
-    shouldComponentUpdate() {
-        throw new Error('error');
+    shouldComponentUpdate () {
         return false;
     }
 
-    componentWillUpdate () {
-        console.log('componentWillUpdate');
-    }
-
-    componentDidUpdate () {
-        console.log('componentDidUpdate');
-    }
+    // componentWillUpdate () {
+    //     console.log('componentWillUpdate');
+    // }
+    //
+    // componentDidUpdate () {
+    //     console.log('componentDidUpdate');
+    // }
 
     _deletePost = () => {
         const { deletePost, id } = this.props;
 
         deletePost(id);
-    }
-
+    };
 
     render () {
-        const { avatar, comment, lastName } = this.props;
-        const { firstName } = this.context;
+        const { avatar, comment, lastName, firstName, created } = this.props;
+        const { lastNameContext, firstNameContext } = this.context;
 
         return (
             <section className = { Styles.post }>
-                <button className = { Styles.close } onClick = { this._deletePost } />
+
+                {
+                    firstName === firstNameContext && lastName === lastNameContext
+                        ? (
+                            <button className = { Styles.close } onClick = { this._deletePost } />
+                        )
+                        : ''
+                }
                 <img
                     alt = 'My avatar'
                     src = { avatar }
                 />
                 <a href = '#'> { `${firstName} ${lastName}` }</a>
-                <time>{ moment().format('MMM D h:mm:ss a') }</time>
-                <p>{ comment }</p>
+                <time>{ moment(created*1000).format('MMM D h:mm:ss a') }</time>
+                {
+                    comment.substring(0, 4) === 'http'
+                        ? (
+                            <img alt = 'img' src = { comment } />
+                        )
+                        : (
+                            <p>{ comment }</p>
+                        )
+                }
             </section>
         );
     }

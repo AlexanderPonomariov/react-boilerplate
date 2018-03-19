@@ -15,7 +15,7 @@ export default class Catcher extends Component {
         this.setState(() => ({
             error: true
         }));
-    };
+    }
 
     render () {
         if (this.state.error) {

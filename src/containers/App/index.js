@@ -11,19 +11,29 @@ import Catcher from '../../components/Catcher';
 import avatar from '../../theme/assets/homer.png';
 
 const options = {
-    firstName: 'Alexander',
-    lastName:  'Ponomariov',
-    avatar
+    firstNameContext: 'Александр',
+    lastNameContext:  'Пономарёв',
+    avatar,
+    api:              'https://lab.lectrum.io/react/api/1fwfsc9M9A',
+    token:            'ucgx0wrjwi'
 };
 
 export default class App extends Component {
     static childContextTypes = {
-        firstName: PropTypes.string.isRequired
+        firstNameContext: PropTypes.string.isRequired,
+        lastNameContext:  PropTypes.string.isRequired,
+        api:              PropTypes.string.isRequired,
+        token:            PropTypes.string.isRequired,
+        avatar:           PropTypes.string.isRequired
     };
 
     getChildContext () {
         return {
-            firstName: options.firstName
+            firstNameContext: options.firstNameContext,
+            lastNameContext:  options.lastNameContext,
+            api:              options.api,
+            token:            options.token,
+            avatar:           options.avatar
         };
     }
 
@@ -31,7 +41,7 @@ export default class App extends Component {
         return (
             <section className = { Styles.app }>
                 <Catcher>
-                    <Feed { ...options } />
+                    <Feed />
                 </Catcher>
             </section>
         );
