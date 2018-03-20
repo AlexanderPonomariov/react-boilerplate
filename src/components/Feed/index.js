@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes, { string } from 'prop-types';
+import PropTypes, { string } from 'prop-types'; import io from 'socket.io-client';
+import { CSSTransition, TransitionGroup, Transition } from 'react-transition-group';
+import { fromTo } from 'gsap';
+import moment from 'moment';
 
 import Composer from '../../components/Composer';
 import Post from '../../components/Post';
@@ -7,7 +10,8 @@ import Post from '../../components/Post';
 import Catcher from '../../components/Catcher';
 import Counter from '../../components/Counter';
 import Spinner from '../../components/Spinner';
-import io from 'socket.io-client';
+import Postman from '../../components/Postman';
+import Styles from './styles.scss';
 
 export default class Feed extends Component {
     static propTypes = {
@@ -24,7 +28,8 @@ export default class Feed extends Component {
 
     state= {
         posts:          [],
-        spinnerVisible: false
+        spinnerVisible: false,
+        postmanTrigger: true
     };
 
     componentWillUpdate () {
@@ -43,7 +48,7 @@ export default class Feed extends Component {
 
         socket.on('connect', () => {
             // хендлим логику конекта
-            console.log(`Socked connected with ID: ${socket.id}`);
+            // console.log(`Socked connected with ID: ${socket.id}`);
         });
 
         socket.on('disconnect', () => {
@@ -86,6 +91,10 @@ export default class Feed extends Component {
         });
 
         this._getPosts();
+    }
+
+    componentWillMount () {
+        localStorage.setItem('helloMessageWasAt', moment());
     }
 
     // _getPosts = () => {
@@ -228,41 +237,177 @@ export default class Feed extends Component {
         //     spinnerVisible: false
         // }));
 
+    };
+
+    _handleComposerAppear = (composer) => {
+        fromTo(
+            composer,
+            1,
+            {
+                y:         -200,
+                x:         500,
+                opacity:   0,
+                rotationY: 360
+            },
+            {
+                y:          0,
+                x:          0,
+                opacity:    1,
+                rotationY:  0,
+                onComplete: () => {
+                    this._hideHelloMessage();
+                }
+            }
+        );
+    };
+
+    _handleCounterAppear = (counter) => {
+        fromTo(
+            counter,
+            1,
+            {
+                y:         -1000,
+                x:         -300,
+                opacity:   0,
+                rotationY: 360
+            }, {
+                y:         0,
+                x:         0,
+                opacity:   1,
+                rotationY: 0
+            }
+        );
+    };
+
+    _handlePostmanAppear = (postman) => {
+        fromTo(
+            postman,
+            2,
+            {
+                y:         0,
+                x:         1000,
+                opacity:   0,
+                rotationY: 0
+            }, {
+                y:         0,
+                x:         0,
+                opacity:   1,
+                rotationY: 0
+            }
+        );
+
+    };
+
+    _handlePostmanDissappear = (postman) => {
+        fromTo(
+            postman,
+            2,
+            {
+                y:         0,
+                x:         0,
+                opacity:   1,
+                rotationY: 0
+            }, {
+                y:         0,
+                x:         1000,
+                opacity:   0,
+                rotationY: 0
+            }
+        );
+    };
+
+    _hideHelloMessage = () => {
+        setTimeout(() => {
+            this.setState(() => ({
+                postmanTrigger: false
+            }));
+        }, 5000);
     }
+
+    _likePost = async (id) => {
+        const { api, token } = this.context;
+
+        const response = await fetch(`${api}/${id}`, {
+            method:  'PUT',
+            headers: {
+                Authorization: token
+            }
+        });
+
+        const { data } = await response.json();
+
+        this.setState(({ posts }) => ({
+            // console.log(posts)
+            posts: posts.map((post) => post.id === id ? data : post)
+        }));
+    };
 
     render () {
         // console.log(this.props);
         const { firstNameContext, avatar, lastNameContext } = this.context;
-        const { posts: postsData, spinnerVisible } = this.state;
+        const { posts: postsData, spinnerVisible, postmanTrigger } = this.state;
         const posts = postsData.map((post) => (
-            <Catcher key = { post.id } >
-                <Post
-                    avatar = { post.avatar }
-                    comment = { post.comment }
-                    deletePost = { this._deletePost }
-                    firstName = { post.firstName }
-                    id = { post.id }
-                    lastName = { post.lastName }
-                    created = { post.created }
-                />
-            </Catcher>
+            <CSSTransition
+                classNames = { {
+                    enter:       Styles.postInStart,
+                    enterActive: Styles.postInEnd,
+                    exit:        Styles.postExitEnd,
+                    exitActive:  Styles.postExitEnd
+                } }
+                key = { post.id }
+                timeout = { { enter: 700, exit: 700 } }>
+                <Catcher >
+                    <Post
+                        { ...post }
+                        deletePost = { this._deletePost }
+                        likePost = { this._likePost }
+                    />
+                </Catcher>
+            </CSSTransition>
         ));
 
         return (
-            <Fragment> {/*Doesn't create level or any tag*/}
+            <section className = { Styles.feed } >
                 <Spinner
                     spinnerVisible = { spinnerVisible }
                 />
-                <Composer
-                    avatar = { avatar }
-                    createPost = { this._createPost }
-                    firstName = { firstNameContext }
-                />
-                <Counter
-                    countedPosts = { posts.length }
-                />
-                { posts }
-            </Fragment>
+                <Transition
+                    appear
+                    in
+                    timeout = { 1000 }
+                    onEnter = { this._handleComposerAppear }>
+                    <Composer
+                        avatar = { avatar }
+                        createPost = { this._createPost }
+                        firstName = { firstNameContext }
+                    />
+                </Transition>
+
+                <Transition
+                    appear
+                    in
+                    timeout = { 1000 }
+                    onEnter = { this._handleCounterAppear }>
+                    <Counter
+                        countedPosts = { posts.length }
+                    />
+                </Transition>
+                <TransitionGroup>
+                    { posts }
+                </TransitionGroup>
+
+                <Transition
+                    appear
+                    in = { postmanTrigger }
+                    timeout = { 2000 }
+                    onEnter = { this._handlePostmanAppear }
+                    onExit = { this._handlePostmanDissappear }>
+                    <Postman
+                        hideHelloMessage = { this._hideHelloMessage }
+                    />
+                </Transition>
+            </section>
+
         );
     }
 }

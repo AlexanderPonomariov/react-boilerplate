@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import moment from 'moment';
 
 import Styles from './styles.scss';
 import { string } from 'prop-types';
 import PropTypes from 'prop-types';
+
+import Like from '../Like';
 
 export default class Post extends Component {
     static propTypes = {
@@ -22,9 +24,9 @@ export default class Post extends Component {
         lastNameContext:  string.isRequired
     };
 
-    shouldComponentUpdate () {
-        return false;
-    }
+    // shouldComponentUpdate () {
+    //     return false;
+    // }
 
     // componentWillUpdate () {
     //     console.log('componentWillUpdate');
@@ -41,7 +43,7 @@ export default class Post extends Component {
     };
 
     render () {
-        const { avatar, comment, lastName, firstName, created } = this.props;
+        const { avatar, comment, lastName, firstName, created, id, likes, likePost } = this.props;
         const { lastNameContext, firstNameContext } = this.context;
 
         return (
@@ -63,12 +65,16 @@ export default class Post extends Component {
                 {
                     comment.substring(0, 4) === 'http'
                         ? (
-                            <img alt = 'img' src = { comment } />
+                            <Fragment>
+                                {/*<img alt = 'img' src = { comment } />*/}
+                                <p>{ comment }</p>
+                            </Fragment>
                         )
                         : (
                             <p>{ comment }</p>
                         )
                 }
+                <Like id = { id } likePost = { likePost } likes = { likes } />
             </section>
         );
     }

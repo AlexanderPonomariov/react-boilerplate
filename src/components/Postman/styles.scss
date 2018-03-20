@@ -1,0 +1,24 @@
+@import '../../theme/palette';
+
+.himessage {
+    display: flex;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    align-items: center;
+    width: 250px;
+    padding: 4px;
+    border: 1px solid #90949C;
+    border-radius: 3px;
+    background-color: #FFF;
+    img {
+        width: 40px;
+        height: 40px;
+        margin-right: 15px;
+        cursor: pointer;
+    }
+    span {
+        display: block;
+        padding-top: 5px;
+    }
+}
