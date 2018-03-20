@@ -28,13 +28,14 @@ export default class App extends Component {
     };
 
     getChildContext () {
-        return {
-            firstNameContext: options.firstNameContext,
-            lastNameContext:  options.lastNameContext,
-            api:              options.api,
-            token:            options.token,
-            avatar:           options.avatar
-        };
+        return options;
+        // {
+        //     firstNameContext: options.firstNameContext,
+        //     lastNameContext:  options.lastNameContext,
+        //     api:              options.api,
+        //     token:            options.token,
+        //     avatar:           options.avatar
+        // };
     }
 
     render () {

@@ -9,6 +9,7 @@
   border: 1px solid darken($paletteColor2, 15%);
   border-radius: 3px;
   background-color: $paletteColor2;
+  overflow: hidden;
 
   img {
     width: 40px;
