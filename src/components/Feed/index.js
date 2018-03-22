@@ -14,7 +14,8 @@ import Postman from '../../components/Postman';
 import Styles from './styles.scss';
 import withState from '../Enchancer';
 
-class Feed extends Component {
+@withState
+export default class Feed extends Component {
 
     static contextTypes = {
         firstNameContext: PropTypes.string.isRequired,
@@ -171,4 +172,4 @@ class Feed extends Component {
     }
 }
 
-export default withState(Feed);
+// export default withState(Feed);

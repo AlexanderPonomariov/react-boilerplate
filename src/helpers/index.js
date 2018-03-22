@@ -24,3 +24,10 @@ export const getRandomColor = () => {
 
     return color;
 };
+
+export const getFullApiUrl = (api, groupId) => {
+    if (typeof api !== 'string' || typeof groupId !== 'string') {
+        throw new Error('api and GROUP_ID should be a string');
+    }
+    return `${api}/${groupId}`;
+};
